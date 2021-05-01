@@ -55,6 +55,16 @@
       (multiple-value-bind (parts disconnected)
           (get-points-from-path (getf obj :d) :curve-resolution curve-resolution)
         (list :points parts :meta (list :disconnected disconnected))))
+    (polyline
+     (let* ((pairs (split-sequence:split-sequence #\space (getf obj :points)))
+	    (points (loop for pair in pairs
+			  if (find #\, pair) collect (progn (setf (aref pair (search "," pair)) #\space)
+							    (read-from-string (format nil "(~a)" pair))))))
+       (list :points (list (coerce points 'vector)))))
+    (line
+     (with-plist-string-reads obj ((x1 :x1) (y1 :y1) (x2 :x2) (y2 :y2))
+       (list :points (list (vector (list x1 y1)
+                                   (list x2 y2))))))
     (ellipse 
       (with-plist-string-reads obj ((x :cx) (y :cy) (rx :rx) (ry :ry))
         (list :points (list (get-points-from-ellipse x y rx ry :curve-resolution curve-resolution)))))
@@ -115,6 +125,8 @@
                    (attrs (append (case tagsym
                                     (rect (list "x" "y" "width" "height"))
                                     (polygon (list "points"))
+				    (line (list "x1" "y1" "x2" "y2"))
+				    (polyline (list "points"))
                                     (path (list "d"))
                                     (ellipse (list "cx" "cy" "rx" "ry"))
                                     (circle (list "cx" "cy" "r"))
@@ -145,7 +157,7 @@
   SVG object curve resolutions can be set via :curve-resolution (the higher the
   value, the more accurate curves are)."
   (multiple-value-bind (nodes groups)
-      (parse-svg-nodes (xmls:parse svg-str) :save-attributes save-attributes :group-id-attribute-name group-id-attribute-name)
+      (parse-svg-nodes (xmls:node->nodelist (xmls:parse svg-str)) :save-attributes save-attributes :group-id-attribute-name group-id-attribute-name)
     (remove-if
       'null
       (mapcar (lambda (node)
