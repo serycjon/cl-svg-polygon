@@ -78,37 +78,37 @@
           (#\M
            (cmd-repeat (args 2)
              (setf cur-point args)
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\m
            (cmd-repeat (args 2)
              (setf cur-point (list (+ cur-x (car args))
                                    (+ cur-y (cadr args))))
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\L
            (cmd-repeat (args 2)
              (setf cur-point args)
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\l
            (cmd-repeat (args 2)
              (setf cur-point (list (+ cur-x (car args))
                                    (+ cur-y (cadr args))))
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\H
            (cmd-repeat (args 1)
              (setf (car cur-point) (car args))
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\h
            (cmd-repeat (args 1)
              (setf (car cur-point) (+ cur-x (car args)))
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\V
            (cmd-repeat (args 1)
              (setf (cadr cur-point) (car args))
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\v
            (cmd-repeat (args 1)
              (setf (cadr cur-point) (+ cur-y (car args)))
-             (push cur-point points)))
+             (push (copy-list cur-point) points)))
           (#\C
            (cmd-repeat (args 6)
              (let ((x1 (car args))
