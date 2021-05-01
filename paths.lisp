@@ -217,8 +217,10 @@
                      cur-point (list x2 y2)))))
           (#\Z
            (push (coerce (reverse (if (points-close-equal-p (car points) first-point)
-                                      (cdr points)
-                                      points)) 'vector) parts)
+				      points
+				      (cons (copy-list first-point) points)))
+			 'vector)
+		 parts)
            (setf points nil))))
       (when (= (length points) 1)
         (setf first-point (car points))))
